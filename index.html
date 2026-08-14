@@ -403,11 +403,11 @@ function emptyDays(){
   return d;
 }
 
-async function loadState(){
+function loadState(){
   try{
-    const res = await window.storage.get(STORAGE_KEY, false);
-    if(res && res.value){
-      const parsed = JSON.parse(res.value);
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
       state.days = { ...emptyDays(), ...(parsed.days || {}) };
     } else {
       state.days = emptyDays();
@@ -423,13 +423,14 @@ async function loadState(){
   render();
 }
 
-async function saveDays(){
+function saveDays(){
   try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify({ days: state.days }), false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ days: state.days }));
   } catch(e){
     console.error('Save failed', e);
   }
 }
+
 
 function esc(s){
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
